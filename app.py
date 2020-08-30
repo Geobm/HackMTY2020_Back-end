@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from github import github_token
 
 import requests
@@ -7,6 +8,7 @@ from pprint import pprint
 import difflib
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/users/<usernames>')
 def analyze_match(usernames):
