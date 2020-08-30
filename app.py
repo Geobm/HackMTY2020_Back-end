@@ -72,7 +72,7 @@ def analyze_match(usernames):
 
             user_data['user_name'] = names[i]
             user_data['person'] = person
-            user_data['ratio'] = maximum
+            user_data['ratio'] = "{:.2f}".format(maximum * 100)
 
             query_url = f"https://api.github.com/users/{names[i]}/repos"
             params = {
