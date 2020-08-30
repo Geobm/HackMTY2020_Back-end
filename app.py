@@ -1,12 +1,15 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+
 from github import github_token
+
 import requests
 import os
+import difflib
+
 import nltk
 from nltk.tokenize import word_tokenize 
 from nltk import FreqDist
-import difflib
 
 app = Flask(__name__)
 CORS(app)
@@ -35,7 +38,7 @@ def analyze_match(usernames):
 
         match.append(languages)
 
-    # total
+    # Total
     i = 0
     ratios = []
     for l in match:
@@ -74,7 +77,7 @@ def analyze_match(usernames):
 
             user_data['user_name'] = names[i]
             user_data['person'] = person
-            user_data['ratio'] = maximum
+            user_data['ratio'] = "{:.2f}".format(maximum * 100)
 
             query_url = f"https://api.github.com/users/{names[i]}/repos"
             params = {
@@ -94,9 +97,7 @@ def analyze_match(usernames):
     return jsonify(total="{:.2f}".format(average * 100), combinations=info)
 
 @app.route('/user/<username>')
-
 def text_mining(username):
-
     token = os.getenv('GITHUB_TOKEN', github_token)
     repo_description = []
     repo_name = []
@@ -123,6 +124,24 @@ def text_mining(username):
     fdist1 = nltk.FreqDist(tokenized_text)
     
     return jsonify(data = fdist1.most_common(10))
+
+@app.route('/user/avatar/<username>')
+def get_avatar(username):
+    token = os.getenv('GITHUB_TOKEN', github_token)
+
+    query_url = f"https://api.github.com/users/{username}/repos"
+    params = {
+        "state": "open",
+    }
+    headers = {'Authorization': f'token {token}'}
+    response = requests.get(query_url, headers=headers, params=params)
+    result = response.json()
+
+    avatar = None
+    if result:
+        avatar = result[0]['owner']['avatar_url']
+
+    return jsonify(data=avatar)
 
 if __name__ == '__main__':
     app.run()
