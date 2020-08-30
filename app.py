@@ -4,6 +4,7 @@ from github import github_token
 import requests
 import os
 from pprint import pprint
+import difflib
 
 app = Flask(__name__)
 
@@ -29,8 +30,21 @@ def analyze_match(usernames):
                 languages.append(result[i]["language"])
 
         match.append(languages)
- 
-    return jsonify(data=match)
+
+    # total
+    i = 0
+    ratios = []
+    for l in match:
+        j = i + 1
+        if j != len(match):
+            aux = difflib.SequenceMatcher(None, match[i], match[j])
+            ratios.append(aux.ratio())
+        
+        i += 1
+
+    average = sum(ratios) / len(ratios)
+    
+    return jsonify(total="{:.2f}".format(average * 100))
 
 if __name__ == '__main__':
     app.run()
