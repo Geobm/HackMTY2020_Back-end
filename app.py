@@ -1,12 +1,15 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+
 from github import github_token
+
 import requests
 import os
+import difflib
+
 import nltk
 from nltk.tokenize import word_tokenize 
 from nltk import FreqDist
-import difflib
 
 app = Flask(__name__)
 CORS(app)
@@ -35,7 +38,7 @@ def analyze_match(usernames):
 
         match.append(languages)
 
-    # total
+    # Total
     i = 0
     ratios = []
     for l in match:
@@ -94,9 +97,7 @@ def analyze_match(usernames):
     return jsonify(total="{:.2f}".format(average * 100), combinations=info)
 
 @app.route('/user/<username>')
-
 def text_mining(username):
-
     token = os.getenv('GITHUB_TOKEN', github_token)
     repo_description = []
     repo_name = []
