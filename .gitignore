@@ -142,4 +142,7 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+# own file
+token.py
+
 # End of https://www.toptal.com/developers/gitignore/api/flask
