@@ -125,6 +125,24 @@ def text_mining(username):
     
     return jsonify(data = fdist1.most_common(10))
 
+@app.route('/user/avatar/<username>')
+def get_avatar(username):
+    token = os.getenv('GITHUB_TOKEN', github_token)
+
+    query_url = f"https://api.github.com/users/{username}/repos"
+    params = {
+        "state": "open",
+    }
+    headers = {'Authorization': f'token {token}'}
+    response = requests.get(query_url, headers=headers, params=params)
+    result = response.json()
+
+    avatar = None
+    if result:
+        avatar = result[0]['owner']['avatar_url']
+
+    return jsonify(data=avatar)
+
 if __name__ == '__main__':
     app.run()
 
