@@ -143,6 +143,6 @@ dmypy.json
 .pytype/
 
 # own file
-token.py
+github.py
 
 # End of https://www.toptal.com/developers/gitignore/api/flask
